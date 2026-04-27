@@ -585,7 +585,7 @@ const App = () => {
                         <div className="bottom-split-row">
                             <div className="bottom-wide-card">
                                 <div className="bottom-card-header">
-                                    <h3 className="bottom-card-title">Barangay Grooming Trends</h3>
+                                    <h3 className="bottom-card-title">Groomed Pets per Barangay</h3>
                                     <span className="view-all-link" onClick={() => setShowAllGroomedPets(!showAllGroomedPets)}>
                                         {showAllGroomedPets ? 'Show Top 5' : 'View All Areas'}
                                     </span>
@@ -730,10 +730,10 @@ const App = () => {
                                 </div>
                                 <div className="bar-viz-container">
                                     {[
-                                        { label: 'Antipolo', val: 29200, percent: 68, color: '#94a3b8' },
-                                        { label: 'Adya', val: 33500, percent: 78, color: '#64748b' },
-                                        { label: 'Sabang', val: 39500, percent: 92, color: '#475569' },
-                                        { label: 'Banaybanay', val: 42800, percent: 100, color: '#1e293b' }
+                                        { label: 'Antipolo', val: 29200, percent: 68, color: '#34A853' },
+                                        { label: 'Adya', val: 33500, percent: 78, color: '#1E88E5' },
+                                        { label: 'Sabang', val: 39500, percent: 92, color: '#7F8C8D' },
+                                        { label: 'Banaybanay', val: 42800, percent: 100, color: '#FFD700' }
                                     ].map((p, i) => (
                                         <div key={i} className="luxury-bar-wrapper">
                                             <div
@@ -763,7 +763,7 @@ const App = () => {
                                             cx="50" cy="50" r="40"
                                             pathLength="100"
                                             strokeDasharray="29 71"
-                                            strokeDashoffset="-78"
+                                            strokeDashoffset="25"
                                             stroke="#FFD700"
                                         />
 
@@ -773,7 +773,7 @@ const App = () => {
                                             cx="50" cy="50" r="40"
                                             pathLength="100"
                                             strokeDasharray="23 77"
-                                            strokeDashoffset="40"
+                                            strokeDashoffset="-4"
                                             stroke="#007bff"
                                         />
 
@@ -783,7 +783,7 @@ const App = () => {
                                             cx="50" cy="50" r="40"
                                             pathLength="100"
                                             strokeDasharray="20 80"
-                                            strokeDashoffset="-52"
+                                            strokeDashoffset="-27"
                                             stroke="#34A853"
                                         />
 
@@ -793,7 +793,7 @@ const App = () => {
                                             cx="50" cy="50" r="40"
                                             pathLength="100"
                                             strokeDasharray="28 72"
-                                            strokeDashoffset="100"
+                                            strokeDashoffset="-47"
                                             stroke="#7F8C8D"
                                         />
                                     </svg>
@@ -825,20 +825,23 @@ const App = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {[
-                                        { rank: 1, name: 'Banaybanay', growth: '+15.2%', service: 'Premium Package', avg: '₱ 1,043', status: 'pos', color: '#FFD700' },
-                                        { rank: 2, name: 'Adya', growth: '+14.1%', service: 'Full Grooming', avg: '₱ 946', status: 'pos', color: '#1E88E5' },
-                                        { rank: 3, name: 'Antipolo Norte', growth: '+9.5%', service: 'Basic Bath', avg: '₱ 850', status: 'pos', color: '#34A853' },
-                                        { rank: 4, name: 'Sabang', growth: '+0.5%', service: 'Various', avg: '₱ 810', status: 'neutral', color: '#7F8C8D' }
-                                    ].map((row, i) => (
-                                        <tr key={i}>
-                                            <td style={{ color: row.color, fontSize: '1.2rem', fontWeight: '800' }}>#{row.rank}</td>
-                                            <td style={{ color: '#17202A' }}>{row.name}</td>
-                                            <td><span className={`growth-pill ${row.status === 'pos' ? 'pill-pos' : 'pill-neutral'}`}>{row.growth}</span></td>
-                                            <td><span className="service-tag">{row.service}</span></td>
-                                            <td style={{ color: 'var(--secondary-blue)' }}>{row.avg}</td>
-                                        </tr>
-                                    ))}
+                                    {(barangayRankings.length > 0 ? barangayRankings : [
+                                        { rank: 1, barangay: 'Banaybanay', growth: '+15.2%', service: 'Premium Package', avg: '₱ 1,043', status: 'pos', color: '#FFD700' },
+                                        { rank: 2, barangay: 'Adya', growth: '+14.1%', service: 'Full Grooming', avg: '₱ 946', status: 'pos', color: '#1E88E5' },
+                                        { rank: 3, barangay: 'Antipolo Norte', growth: '+9.5%', service: 'Basic Bath', avg: '₱ 850', status: 'pos', color: '#34A853' },
+                                        { rank: 4, barangay: 'Sabang', growth: '+0.5%', service: 'Various', avg: '₱ 810', status: 'neutral', color: '#7F8C8D' }
+                                    ]).map((row, i) => {
+                                        const color = row.color || (row.rank === 1 ? '#FFD700' : row.rank === 2 ? '#1E88E5' : row.rank === 3 ? '#34A853' : '#7F8C8D');
+                                        return (
+                                            <tr key={i}>
+                                                <td style={{ color: color, fontSize: '1.2rem', fontWeight: '800' }}>#{row.rank}</td>
+                                                <td style={{ color: '#17202A' }}>{row.barangay}</td>
+                                                <td><span className={`growth-pill ${row.status === 'pos' ? 'pill-pos' : 'pill-neutral'}`}>{row.growth || '+5.0%'}</span></td>
+                                                <td><span className="service-tag">{row.service || 'Standard'}</span></td>
+                                                <td style={{ color: 'var(--secondary-blue)' }}>{row.avg || `₱ ${(row.revenue / row.count).toFixed(0)}`}</td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
