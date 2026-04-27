@@ -117,6 +117,7 @@ const App = () => {
                 date: '2026-03-15',
                 time: '10:00 AM',
                 status: 'accepted',
+                petName: 'Buddy',
                 price: getPrice('Golden Retriever', 'Large'),
                 purok: '1'
             },
@@ -337,7 +338,7 @@ const App = () => {
                 ${reportData.bookings.map(booking => `
                   <tr>
                     <td>${booking.clientName}</td>
-                    <td>${booking.petName}</td>
+                    <td>${booking.petName}${booking.petName2 ? ` & ${booking.petName2}` : ''}</td>
                     <td>${booking.service}</td>
                     <td>${booking.date}</td>
                     <td>${booking.time}</td>
@@ -370,9 +371,9 @@ const App = () => {
                     <td>${customer.name}</td>
                     <td>${customer.email}</td>
                     <td>${customer.phone}</td>
-                    <td>${customer.petName}</td>
-                    <td>${customer.petType}</td>
-                    <td>${customer.petSize}</td>
+                    <td>${customer.petName}${customer.petName2 ? ` & ${customer.petName2}` : ''}</td>
+                    <td>${customer.petType}${customer.petType2 ? ` (${customer.petType2})` : ''}</td>
+                    <td>${customer.petSize}${customer.petSize2 ? ` / ${customer.petSize2}` : ''}</td>
                     <td>${customer.lastVisit}</td>
                     <td>${customer.totalVisits}</td>
                   </tr>
@@ -450,12 +451,12 @@ const App = () => {
 
             const newCustomer = {
                 id: customers.length + 1,
-                customerName: formData.customerName,
+                name: formData.customerName || formData.clientName,
                 petName: formData.petName,
                 breed: formData.breed,
-                contactNumber: formData.contactNumber,
+                phone: formData.contactNumber || formData.phone,
                 address: formData.address,
-                totalBookings: 1,
+                totalVisits: 1,
                 loyaltyPoints: 0,
                 membershipTier: 'Bronze',
                 status: 'Active'
@@ -1075,11 +1076,13 @@ const App = () => {
                                 <tr key={booking.id}>
                                     <td>
                                         <div style={{ fontWeight: 'bold' }}>{booking.clientName}</div>
-                                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Pet: {booking.petName}</div>
+                                        <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                                            Pet: {booking.petName} {booking.petName2 ? `& ${booking.petName2}` : ''}
+                                        </div>
                                     </td>
                                     <td>
                                         <div>{booking.service}</div>
-                                        {SPECIAL_BREED_RATES[booking.breed] && (
+                                        {(SPECIAL_BREED_RATES[booking.breed] || SPECIAL_BREED_RATES[booking.breed2]) && (
                                             <span style={{ fontSize: '0.7rem', background: '#fef3c7', color: '#d97706', padding: '2px 6px', borderRadius: '4px' }}>Special Breed</span>
                                         )}
                                     </td>
