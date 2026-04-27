@@ -445,7 +445,7 @@ const App = () => {
             const newBooking = {
                 id: bookings.length + 1,
                 ...formData,
-                price: getPrice(formData.petSize, formData.breed)
+                price: getPrice(formData.breed, formData.petSize)
             };
 
             const newCustomer = {
@@ -930,12 +930,13 @@ const App = () => {
     const renderOverview = () => {
         const totalRevenue = services.reduce((sum, service) => sum + (service.price * service.bookings), 0);
         const totalBookings = services.reduce((sum, service) => sum + service.bookings, 0);
-        const avgPrice = Math.round(totalRevenue / totalBookings);
-        const topService = services.sort((a, b) => (b.price * b.bookings) - (a.price * a.bookings))[0];
+        const avgPrice = totalBookings > 0 ? Math.round(totalRevenue / totalBookings) : 0;
+        const sortedServices = [...services].sort((a, b) => (b.price * b.bookings) - (a.price * a.bookings));
+        const topService = sortedServices[0] || { name: '-', price: 0, bookings: 0 };
         const premiumBookings = services
             .filter(s => s.price >= 1000)
             .reduce((sum, s) => sum + s.bookings, 0);
-        const premiumPercent = Math.round((premiumBookings / totalBookings) * 100);
+        const premiumPercent = totalBookings > 0 ? Math.round((premiumBookings / totalBookings) * 100) : 0;
 
         return (
             <div className="dashboard-grid">
