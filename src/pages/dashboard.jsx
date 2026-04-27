@@ -25,6 +25,14 @@ const SPECIAL_BREED_RATES = {
     'Giant Poodle': 2699
 };
 
+const DISPLAY_BREED_LIST = [
+    'Shih Tzu', 'Husky', 'Japanese Akita', 'Chow Chow',
+    'Belgian Malinois', 'German Shepherd', 'Rottweiler',
+    'Samoyed', 'Alaskan Malamute', 'St. Bernard',
+    'Standard Poodle', 'Giant Poodle', 'Golden Retriever',
+    'Chihuahua', 'Beagle'
+];
+
 const getPrice = (breed, size) => {
     const sizeRate = PET_SIZE_RATES[size] || 0;
     const breedRate = SPECIAL_BREED_RATES[breed] || 0;
@@ -66,6 +74,7 @@ const App = () => {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [overallView, setOverallView] = useState('main');
     const [showOverallSubmenu, setShowOverallSubmenu] = useState(false);
+    const [showBreedsSubmenu, setShowBreedsSubmenu] = useState(false);
     const [stats, setStats] = useState({
         totalRevenue: 0,
         monthlyGrowth: 0,
@@ -838,6 +847,86 @@ const App = () => {
         );
     };
 
+    const renderBreedsAnalytics = () => {
+        const finalCounts = {};
+
+        // Initialize all displayed breeds with 0
+        DISPLAY_BREED_LIST.forEach(breed => {
+            finalCounts[breed] = 0;
+        });
+
+        // Count actual occurrences from customers
+        customers.forEach(c => {
+            const processBreed = (b) => {
+                if (!b) return;
+                // Normalize for matching: Title Case
+                const normalized = b.trim().toLowerCase().split(' ').map(word =>
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ');
+
+                // If it's in our display list, use that exact string, otherwise add it as new
+                const matchingKey = DISPLAY_BREED_LIST.find(k => k.toLowerCase() === normalized.toLowerCase()) || normalized;
+                finalCounts[matchingKey] = (finalCounts[matchingKey] || 0) + 1;
+            };
+
+            processBreed(c.petType);
+            processBreed(c.petType2);
+        });
+
+        const sortedBreeds = Object.entries(finalCounts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+        const maxCount = Math.max(...sortedBreeds.map(b => b.count), 1);
+
+        return (
+            <div className="breeds-analytics">
+                <div className="analytics-header">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <h2>🐕 Breed Distribution</h2>
+                            <p>Complete overview of pet breeds population</p>
+                        </div>
+                        <div className="breed-stats-summary" style={{ display: 'flex', gap: '1rem' }}>
+                            <span className="summary-badge" style={{ background: 'white', padding: '6px 12px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                                Total: {sortedBreeds.length} Breeds
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="breeds-grid">
+                    {sortedBreeds.map((breed, index) => (
+                        <div key={index} className={`breed-card ${breed.count === 0 ? 'empty-breed' : ''}`} style={{ opacity: breed.count === 0 ? 0.7 : 1 }}>
+                            <div className="breed-info">
+                                <span className="breed-name">{breed.name}</span>
+                                <span className={`breed-count ${breed.count > 0 ? 'has-pets' : ''}`} style={{
+                                    background: breed.count > 0 ? 'var(--light-yellow)' : '#f1f5f9',
+                                    color: breed.count > 0 ? '#1e3a8a' : '#64748b',
+                                    padding: '4px 10px',
+                                    borderRadius: '20px',
+                                    fontSize: '0.85rem',
+                                    fontWeight: 'bold'
+                                }}>
+                                    {breed.count} {breed.count === 1 ? 'Pet' : 'Pets'}
+                                </span>
+                            </div>
+                            <div className="breed-progress-bar">
+                                <div
+                                    className="progress-fill"
+                                    style={{
+                                        width: `${(breed.count / maxCount) * 100}%`,
+                                        background: breed.count === 0 ? '#e2e8f0' : (index % 3 === 0 ? 'var(--primary-yellow)' : index % 3 === 1 ? 'var(--secondary-blue)' : 'var(--accent-green)')
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
     const renderOverview = () => {
         const totalRevenue = services.reduce((sum, service) => sum + (service.price * service.bookings), 0);
         const totalBookings = services.reduce((sum, service) => sum + service.bookings, 0);
@@ -1320,6 +1409,12 @@ const App = () => {
                                 >
                                     Revenue Distribution
                                 </button>
+                                <button
+                                    onClick={() => { setActiveView('overall'); setOverallView('breeds'); }}
+                                    className={activeView === 'overall' && overallView === 'breeds' ? 'sub-active' : ''}
+                                >
+                                    Breeds Distribution
+                                </button>
                             </div>
                         )}
                     </div>
@@ -1387,7 +1482,8 @@ const App = () => {
 
                 <main className="main-content">
                     <div key={activeView === 'overall' ? `overall-${overallView}` : activeView} className="fade-in-view">
-                        {activeView === 'overall' && renderOverallAnalytics()}
+                        {activeView === 'overall' && overallView !== 'breeds' && renderOverallAnalytics()}
+                        {activeView === 'overall' && overallView === 'breeds' && renderBreedsAnalytics()}
                         {activeView === 'overview' && renderOverview()}
                         {activeView === 'services' && renderServices()}
                         {activeView === 'bookings' && renderBookings()}
@@ -1608,6 +1704,7 @@ const App = () => {
 
 const activeViewTitle = {
     overall: 'Overall Analytics',
+    breeds: 'Breeds Analytics',
     overview: 'Analytics Overview',
     bookings: 'Booking Monitoring',
     customers: 'Customer List'
