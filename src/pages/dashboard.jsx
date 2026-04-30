@@ -250,17 +250,17 @@ const App = () => {
         ]);
 
         setServices([
-            { name: 'Small Size Package', price: 799, duration: '1 hour', bookings: 45 },
-            { name: 'Medium Size Package', price: 899, duration: '1.5 hours', bookings: 32 },
-            { name: 'Large Size Package', price: 999, duration: '2 hours', bookings: 28 },
-            { name: 'Extra Large Package', price: 1099, duration: '2.5 hours', bookings: 18 },
-            { name: 'XXL Size Package', price: 1199, duration: '3 hours', bookings: 15 },
-            { name: 'Husky Rate', price: 1199, duration: '2.5 hours', bookings: 12 },
-            { name: 'Chow Chow Rate', price: 1199, duration: '2.5 hours', bookings: 10 },
-            { name: 'German Shepherd Rate', price: 1199, duration: '2.5 hours', bookings: 14 },
-            { name: 'Standard Poodle Rate', price: 1699, duration: '3 hours', bookings: 8 },
-            { name: 'Giant Poodle Rate', price: 2699, duration: '4 hours', bookings: 5 },
-            { name: 'Cat Grooming', price: 899, duration: '1.5 hours', bookings: 25 }
+            { name: 'Small Size Package', price: 799, bookings: 45 },
+            { name: 'Medium Size Package', price: 899, bookings: 32 },
+            { name: 'Large Size Package', price: 999, bookings: 28 },
+            { name: 'Extra Large Package', price: 1099, bookings: 18 },
+            { name: 'XXL Size Package', price: 1199, bookings: 15 },
+            { name: 'Husky Rate', price: 1199, bookings: 12 },
+            { name: 'Chow Chow Rate', price: 1199, bookings: 10 },
+            { name: 'German Shepherd Rate', price: 1199, bookings: 14 },
+            { name: 'Standard Poodle Rate', price: 1699, bookings: 8 },
+            { name: 'Giant Poodle Rate', price: 2699, bookings: 5 },
+            { name: 'Cat Grooming', price: 899, bookings: 25 }
         ]);
     }, []);
 
@@ -389,7 +389,6 @@ const App = () => {
                 <tr>
                   <th>Service</th>
                   <th>Price</th>
-                  <th>Duration</th>
                   <th>Monthly Bookings</th>
                   <th>Revenue</th>
                 </tr>
@@ -399,7 +398,6 @@ const App = () => {
                   <tr>
                     <td>${service.name}</td>
                     <td>₱${service.price}</td>
-                    <td>${service.duration}</td>
                     <td>${service.bookings}</td>
                     <td>₱${(service.price * service.bookings).toLocaleString()}</td>
                   </tr>
@@ -685,7 +683,7 @@ const App = () => {
                                         <div key={idx} className="premium-service-card" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div>
                                                 <h4 style={{ margin: '0 0 0.5rem 0', color: '#17202a', fontSize: '1.1rem' }}>{service.name}</h4>
-                                                <p style={{ margin: 0, color: '#95A5A6', fontSize: '0.85rem', fontWeight: 600 }}>{service.bookings} bookings • {service.duration}</p>
+                                                <p style={{ margin: 0, color: '#95A5A6', fontSize: '0.85rem', fontWeight: 600 }}>{service.bookings} bookings</p>
                                             </div>
                                             <div style={{ textAlign: 'right' }}>
                                                 <span style={{ display: 'block', color: '#34A853', fontWeight: 800, fontSize: '1.2rem' }}>₱ {(service.price * service.bookings).toLocaleString()}</span>
@@ -978,7 +976,6 @@ const App = () => {
                                         <th>Service Name</th>
                                         <th>Price</th>
                                         <th>Bookings</th>
-                                        <th>Duration</th>
                                         <th>Revenue</th>
                                     </tr>
                                 </thead>
@@ -993,7 +990,6 @@ const App = () => {
                                                     <td className="service-name">{service.name}</td>
                                                     <td>₱{service.price}</td>
                                                     <td>{service.bookings}</td>
-                                                    <td>{service.duration}</td>
                                                     <td className="revenue">₱{revenue.toLocaleString()}</td>
                                                 </tr>
                                             );
@@ -1291,7 +1287,6 @@ const App = () => {
                         <thead>
                             <tr>
                                 <th>SERVICE NAME &amp; DESCRIPTION</th>
-                                <th>DURATION</th>
                                 <th>PRICE</th>
                                 <th>ACTIONS</th>
                             </tr>
@@ -1313,7 +1308,6 @@ const App = () => {
                                         </span>
                                         <span className="svc-name">{service.name}</span>
                                     </td>
-                                    <td className="svc-duration-cell">{service.duration}</td>
                                     <td className="svc-price-cell">
                                         {editingServiceId === index ? (
                                             <div className="price-input-wrapper">
